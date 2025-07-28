@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace Kuro_DockLauncher
+namespace KuroDockLauncher
 {
     /// <summary>
     /// Interaction logic for App.xaml

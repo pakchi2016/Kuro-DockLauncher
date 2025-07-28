@@ -8,25 +8,43 @@
         Title="BookmarkPanel"
         WindowStyle="None"
         ResizeMode="NoResize"
-        AllowsTransparency="True"   
-        Topmost="True"
+        AllowsTransparency="True"
+        Width="180"
         ShowInTaskbar="False"
+        Background="Transparent"
         Loaded="Window_Loaded">
-        <Window.Background>
-            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                <GradientStop Color="#A0E0E6FA" Offset="0.0" />
-                <GradientStop Color="#A0C096EC" Offset="0.5" />
-                <GradientStop Color="#A08875D1" Offset="1.0" />
-            </LinearGradientBrush>
-        </Window.Background>
-    <Grid>
+    <Grid HorizontalAlignment="Right">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Button Content="×" Width="90" Height="30" Grid.Row="0" Click="CloseButton_Click" />
-        <StackPanel x:Name="FolderArea" AllowDrop="True" Grid.Row="1" Drop="FileFolder_Drop" Background="Transparent"/>
-        <StackPanel x:Name="FileArea" AllowDrop="True" Grid.Row="2" Drop="FileFolder_Drop" Background="Transparent"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="90" />
+        </Grid.ColumnDefinitions>
+        <StackPanel x:Name="FolderPulldown" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="LightGray"/>
+        <Button Content="×" Width="90" Height="30" 
+                Grid.Row="0" Grid.Column="1" Click="CloseButton_Click" />
+
+        <StackPanel x:Name="FolderPanel" AllowDrop="True" Drop="FileFolder_Drop" Grid.Row="1" Grid.Column="1">
+            <StackPanel.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#A0E0E6FA" Offset="0.0" />
+                    <GradientStop Color="#A0C096EC" Offset="0.5" />
+                    <GradientStop Color="#A08875D1" Offset="1.0" />
+                </LinearGradientBrush>
+            </StackPanel.Background>
+        </StackPanel>
+
+        <StackPanel x:Name="FilePanel" AllowDrop="True" Drop="FileFolder_Drop" Grid.Row="2" Grid.Column="1">
+            <StackPanel.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="#A0E0E6FA" Offset="0.0" />
+                    <GradientStop Color="#A0C096EC" Offset="0.5" />
+                    <GradientStop Color="#A08875D1" Offset="1.0" />
+                </LinearGradientBrush>
+            </StackPanel.Background>
+        </StackPanel>
     </Grid>
 </Window>
