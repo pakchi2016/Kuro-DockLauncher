@@ -1,50 +1,131 @@
 ﻿<Window x:Class="KuroDockLauncher.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:KuroDockLauncher"
-        mc:Ignorable="d"
         Title="BookmarkPanel"
         WindowStyle="None"
         ResizeMode="NoResize"
         AllowsTransparency="True"
-        Width="180"
-        ShowInTaskbar="False"
         Background="Transparent"
+        Width="300"
+        ShowInTaskbar="False"
+        Topmost="True"
         Loaded="Window_Loaded">
-    <Grid HorizontalAlignment="Right">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <Window.Resources>
+        <!-- アニメーションの台本をここに定義します -->
+        <Storyboard x:Key="SlideInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="0" Duration="0:0:0.3" />
+        </Storyboard>
+        <Storyboard x:Key="SlideOutStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)"
+                             To="89" Duration="0:0:0.5" />
+        </Storyboard>
+    </Window.Resources>
+    <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="90" />
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel x:Name="FolderPulldown" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Background="LightGray"/>
-        <Button Content="×" Width="90" Height="30" 
-                Grid.Row="0" Grid.Column="1" Click="CloseButton_Click" />
+        <Grid Background="Transparent" Grid.Column="0"/>
+        <Grid x:Name="RootPanel" Background="#01FFFFFF" Grid.Column="1">
+            <Grid HorizontalAlignment="Right" MouseLeave="ClearPanel">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="90" />
+                </Grid.ColumnDefinitions>
 
-        <StackPanel x:Name="FolderPanel" AllowDrop="True" Drop="FileFolder_Drop" Grid.Row="1" Grid.Column="1">
-            <StackPanel.Background>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#A0E0E6FA" Offset="0.0" />
-                    <GradientStop Color="#A0C096EC" Offset="0.5" />
-                    <GradientStop Color="#A08875D1" Offset="1.0" />
-                </LinearGradientBrush>
-            </StackPanel.Background>
-        </StackPanel>
+                <StackPanel x:Name="FolderPulldown" Grid.Row="1" Grid.Column="0" Background="LightGray"/>
+                <Button Content="×" Width="90" Height="30" Grid.Row="0" Grid.Column="2" Click="CloseButton_Click" />
+                <StackPanel x:Name="MiddlePanel" Grid.Row="1" Grid.Column="1">
+                    <StackPanel.Background>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="#A0E0E6FA" Offset="0.0" />
+                            <GradientStop Color="#A0C096EC" Offset="0.5" />
+                            <GradientStop Color="#A08875D1" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </StackPanel.Background>
+                </StackPanel>
+                <StackPanel x:Name="MddlePanel" Grid.Row="1" Grid.Column="1"/>
 
-        <StackPanel x:Name="FilePanel" AllowDrop="True" Drop="FileFolder_Drop" Grid.Row="2" Grid.Column="1">
-            <StackPanel.Background>
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <GradientStop Color="#A0E0E6FA" Offset="0.0" />
-                    <GradientStop Color="#A0C096EC" Offset="0.5" />
-                    <GradientStop Color="#A08875D1" Offset="1.0" />
-                </LinearGradientBrush>
-            </StackPanel.Background>
-        </StackPanel>
+                <!-- アニメーションするパネル -->
+                <StackPanel x:Name="IndexPanel" Grid.Row="1" Grid.Column="2" AllowDrop="True">
+                    <StackPanel.RenderTransform>
+                        <TranslateTransform X="89" />
+                    </StackPanel.RenderTransform>
+                    <StackPanel.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="インデックスボタンを追加" Click="AddButton_Click"/>
+                            <MenuItem Header="インデックスボタンを削除" Click="RemoveButton_Click"/>
+                            <Separator/>
+                            <MenuItem Header="閉じる"/>
+                        </ContextMenu>
+                    </StackPanel.ContextMenu>
+                    <StackPanel.Background>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="#A0E0E6FA" Offset="0.0" />
+                            <GradientStop Color="#A0C096EC" Offset="0.5" />
+                            <GradientStop Color="#A08875D1" Offset="1.0" />
+                        </LinearGradientBrush>
+                    </StackPanel.Background>
+
+                    <!-- 4. アニメーションのトリガーを、ここに正しく定義し直します -->
+                    <StackPanel.Style>
+                        <Style TargetType="StackPanel">
+                            <Style.Triggers>
+                                <!-- 【表示条件1】マウスがウィンドウの上にある時 -->
+                                <DataTrigger Binding="{Binding ElementName=RootPanel, Path=IsMouseOver}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Name="ShowPanelMouse" Storyboard="{StaticResource SlideInStoryboard}"/>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <RemoveStoryboard BeginStoryboardName="ShowPanelMouse"/>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <!-- 【表示条件2】ドラッグしながらウィンドウの上にある時 -->
+                                <DataTrigger Binding="{Binding ElementName=RootPanel, Path=IsDragOver}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Name="ShowPanelDrag" Storyboard="{StaticResource SlideInStoryboard}"/>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <RemoveStoryboard BeginStoryboardName="ShowPanelDrag"/>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <!-- 【追加：表示条件3】コンテキストメニューが開いている時 -->
+                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=ContextMenu.IsOpen}" Value="True">
+                                    <DataTrigger.EnterActions>
+                                        <BeginStoryboard Name="ShowPanelMenu" Storyboard="{StaticResource SlideInStoryboard}"/>
+                                    </DataTrigger.EnterActions>
+                                    <DataTrigger.ExitActions>
+                                        <RemoveStoryboard BeginStoryboardName="ShowPanelMenu"/>
+                                    </DataTrigger.ExitActions>
+                                </DataTrigger>
+
+                                <!-- 【非表示条件】マウスが外にあり、かつドラッグ中でもなく、かつメニューも閉じていれば -->
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=RootPanel, Path=IsMouseOver}" Value="False"/>
+                                        <Condition Binding="{Binding ElementName=RootPanel, Path=IsDragOver}" Value="False"/>
+                                        <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=ContextMenu.IsOpen}" Value="False"/>
+                                    </MultiDataTrigger.Conditions>
+                                    <MultiDataTrigger.EnterActions>
+                                        <BeginStoryboard Name="HidePanel" Storyboard="{StaticResource SlideOutStoryboard}"/>
+                                    </MultiDataTrigger.EnterActions>
+                                    <MultiDataTrigger.ExitActions>
+                                        <RemoveStoryboard BeginStoryboardName="HidePanel"/>
+                                    </MultiDataTrigger.ExitActions>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </StackPanel.Style>
+                </StackPanel>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

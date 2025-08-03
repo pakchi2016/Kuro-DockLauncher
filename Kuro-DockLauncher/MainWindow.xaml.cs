@@ -1,11 +1,14 @@
-﻿using System.Windows;
-using System.IO;
-using System.Windows.Controls;
-using System.Diagnostics.Eventing.Reader;
-using System.Diagnostics;
+﻿using KuroDockLauncher.Index;
 using KuroDockLauncher.module;
 using KuroDockLauncher.Property;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.Eventing.Reader;
+using System.IO;
 using System.Reflection;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace KuroDockLauncher
 {
@@ -36,25 +39,20 @@ namespace KuroDockLauncher
             Application.Current.Shutdown();
         }
 
-        private void FileFolder_Drop(object sender, DragEventArgs e)
+        private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if(e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                // ドロップされたファイルのパスを取得します
-                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            var indexdoc = new IndexControl();
+            indexdoc.ShowDialog();
+        }
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
 
-                foreach (var item in files)
-                {
-                    if (Directory.Exists(item))
-                    {
-                        AddButtons.AddFolderButton(item);
-                    }
-                    else if (File.Exists(item))
-                    {
-                        AddButtons.AddFileButton(item);
-                    }
-                }
-            }
+        }
+
+        private void ClearPanel(object sender, MouseEventArgs e)
+        {
+            MiddlePanel.Children.Clear();
+            FolderPulldown.Children.Clear();
         }
     }
 }

@@ -5,7 +5,6 @@ using System.Windows.Controls;
 using Kuro_DockLauncher;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using KuroDockLauncher.module;
 using KuroDockLauncher.Property;
 
 
@@ -14,11 +13,8 @@ namespace KuroDockLauncher.module
     public static class AddButtons
     {
 
-        public static void AddFolderButton(string item)
+        public static void AddBookmarkButton(string item,StackPanel panel)
         {
-            var mainwindow = Application.Current.MainWindow;
-            if (mainwindow == null) { return; }
-            var panel = mainwindow.FindName("FolderPanel") as StackPanel;
 
             Button newbutton = new Button
             {
@@ -28,17 +24,17 @@ namespace KuroDockLauncher.module
                 Tag = item,
                 Content = Path.GetFileName(item),
             };
-            panel.Children.Add(newbutton);
+
+            if (Directory.Exists(item))
+            {
+                newbutton.MouseEnter += BookmarkButtonHandler.BookmarkButton_MouseOn;
+            }
             newbutton.Click += BookmarkButtonHandler.BookmarkButton_Click;
-            newbutton.MouseEnter += BookmarkButtonHandler.BookmarkButton_MouseOn;
+            panel.Children.Add(newbutton);
         }
 
-        public static void AddFileButton(string item)
+        public static void AddFileButton(string item,StackPanel panel)
         {
-            var mainwindow = Application.Current.MainWindow;
-            if (mainwindow == null) { return; }
-            var panel = mainwindow.FindName("FilePanel") as StackPanel;
-
             Button newbutton = new Button
             {
                 Width = 90,
