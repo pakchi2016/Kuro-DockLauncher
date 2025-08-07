@@ -22,10 +22,8 @@ namespace KuroDockLauncher
             InitializeComponent();
 
         }
-
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-
             // タスクバーを除いたデスクトップ領域の情報を取得します
             var workArea = SystemParameters.WorkArea;
 

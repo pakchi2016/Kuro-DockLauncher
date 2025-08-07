@@ -21,5 +21,45 @@
                 </DoubleAnimation.EasingFunction>
             </DoubleAnimation>
         </Storyboard>
+        <Style x:Key="StyleAnimation" TargetType="StackPanel">
+            <Setter Property="AllowDrop" Value="True"/>
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="MouseEnter">
+                    <BeginStoryboard Storyboard="{StaticResource SlideInFromRightStoryboard}"/>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="DragEnter">
+                    <BeginStoryboard Storyboard="{StaticResource SlideInFromRightStoryboard}"/>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="ContextMenu.Opened">
+                    <BeginStoryboard Storyboard="{StaticResource SlideInFromRightStoryboard}"/>
+                </EventTrigger>
+                <DataTrigger Binding="{Binding ElementName=MddlePanel, Path=IsMouseOver}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource SlideInFromRightStoryboard}"/>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ElementName=FolderPulldown, Path=IsMouseOver}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource SlideInFromRightStoryboard}"/>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+                <EventTrigger RoutedEvent="MouseLeave">
+                    <BeginStoryboard Storyboard="{StaticResource SlideOutToRightStoryboard}"/>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="DragLeave">
+                    <BeginStoryboard Storyboard="{StaticResource SlideOutToRightStoryboard}"/>
+                </EventTrigger>
+                <DataTrigger Binding="{Binding ElementName=MddlePanel, Path=IsMouseOver}" Value="False">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource SlideOutToRightStoryboard}"/>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ElementName=FolderPulldown, Path=IsMouseOver}" Value="False">
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard Storyboard="{StaticResource SlideOutToRightStoryboard}"/>
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </Application.Resources>
 </Application>
